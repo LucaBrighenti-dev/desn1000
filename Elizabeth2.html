@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Morphing Wing Project - DESN1000</title>
+<style>
+    /* =========================================
+       COPY THIS STYLE BLOCK INTO MOODLE
+       (Switch to HTML view in Moodle and paste at the top)
+       ========================================= */
+
+    /* CORE THEME */
+    :root {
+        --unsw-blue: #002664;
+        --unsw-yellow: #ffcc00;
+        --tech-grey: #f4f6f9;
+        --slate: #2d3436;
+    }
+
+    .mw-body {
+        font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        color: #333;
+        background-color: var(--tech-grey); /* Fallback for test file */
+        line-height: 1.6;
+    }
+
+    /* MAIN CONTAINER CARD */
+    .mw-container {
+        background-color: #ffffff;
+        max-width: 1100px;
+        margin: 0 auto;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+        border: 1px solid #e0e0e0;
+    }
+
+    /* HERO SECTION */
+    .mw-hero {
+        background: linear-gradient(135deg, #002664 0%, #004080 100%);
+        color: white;
+        padding: 50px 40px;
+        position: relative;
+        overflow: hidden;
+    }
+    .mw-hero h1 {
+        margin: 0;
+        font-size: 2.8rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        line-height: 1.1;
+    }
+    .mw-hero p {
+        font-size: 1.2rem;
+        margin-top: 15px;
+        opacity: 0.9;
+        max-width: 700px;
+        font-weight: 300;
+    }
+    /* Abstract Wing Graphic CSS */
+    .mw-hero::after {
+        content: "";
+        position: absolute;
+        right: -80px;
+        bottom: -100px;
+        width: 300px;
+        height: 300px;
+        border: 20px solid rgba(255, 204, 0, 0.1);
+        transform: rotate(45deg);
+        border-radius: 40px;
+    }
+    .mw-hero::before {
+        content: "";
+        position: absolute;
+        right: 150px;
+        top: -50px;
+        width: 100px;
+        height: 100px;
+        background: rgba(255, 255, 255, 0.05);
+        transform: rotate(45deg);
+    }
+
+    /* ACTION GRID (Resources) */
+    .mw-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 20px;
+        padding: 0 40px;
+        margin-top: -35px; /* Overlap Hero */
+        position: relative;
+        z-index: 10;
+        margin-bottom: 40px;
+    }
+    .mw-card {
+        background: white;
+        padding: 25px 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        border-bottom: 4px solid #ddd;
+        transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+        text-align: center;
+    }
+    .mw-card:hover {
+        transform: translateY(-5px);
+        border-bottom-color: var(--unsw-yellow);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+    }
+    .mw-icon { font-size: 2.5rem; margin-bottom: 15px; display: block; }
+    .mw-card h3 { margin: 0 0 8px 0; color: var(--unsw-blue); font-size: 1.1rem; font-weight: 700; }
+    .mw-card p { font-size: 0.9rem; color: #666; margin: 0; line-height: 1.4; }
+
+    /* SECTIONS */
+    .mw-section { padding: 40px; border-bottom: 1px solid #eee; }
+    .mw-section:last-child { border-bottom: none; }
+    
+    .mw-title {
+        color: var(--unsw-blue);
+        font-weight: 800;
+        font-size: 1.6rem;
+        margin-top: 0;
+        margin-bottom: 25px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    .mw-title::before {
+        content: "";
+        display: block;
+        width: 6px;
+        height: 28px;
+        background: var(--unsw-yellow);
+        border-radius: 2px;
+    }
+
+    /* ALERTS */
+    .mw-alert {
+        background: #fff8e1; /* Yellow tint */
+        border-left: 5px solid #ffc107;
+        padding: 20px;
+        border-radius: 4px;
+        margin-bottom: 25px;
+        color: #5d4037;
+        font-size: 0.95rem;
+        display: flex;
+        gap: 15px;
+        align-items: flex-start;
+    }
+
+    /* TECH TERMINAL BOX (For SolidWorks) */
+    .mw-terminal {
+        background: #1e1e1e;
+        color: #d4d4d4;
+        padding: 25px;
+        border-radius: 8px;
+        font-family: 'Consolas', 'Monaco', monospace;
+        box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
+        border: 1px solid #444;
+        position: relative;
+    }
+    .mw-terminal-header {
+        border-bottom: 1px solid #444;
+        padding-bottom: 10px;
+        margin-bottom: 15px;
+        color: #aaa;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+    .mw-code-highlight {
+        color: var(--unsw-yellow);
+        font-weight: bold;
+        font-size: 1.1rem;
+        background: rgba(255, 204, 0, 0.1);
+        padding: 4px 8px;
+        border-radius: 4px;
+        border: 1px dashed #665200;
+        display: inline-block;
+        margin: 5px 0;
+    }
+    .mw-btn-dl {
+        background: var(--unsw-yellow);
+        color: #000;
+        text-decoration: none;
+        padding: 8px 16px;
+        font-weight: bold;
+        border-radius: 4px;
+        font-family: sans-serif;
+        display: inline-block;
+        margin-top: 15px;
+        transition: background 0.2s;
+    }
+    .mw-btn-dl:hover { background: #e6b800; }
+
+    /* TABLES */
+    .mw-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        margin-bottom: 20px;
+        font-size: 0.95rem;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        overflow: hidden;
+    }
+    .mw-table th {
+        background: var(--unsw-blue);
+        color: white;
+        padding: 15px;
+        text-align: left;
+        text-transform: uppercase;
+        font-size: 0.8rem;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+    }
+    .mw-table td {
+        padding: 15px;
+        border-bottom: 1px solid #eee;
+        color: #444;
+        vertical-align: top;
+    }
+    .mw-table tr:last-child td { border-bottom: none; }
+    .mw-table tr:nth-child(even) { background-color: #f9f9f9; }
+    
+    .mw-badge {
+        background: #e3f2fd;
+        color: var(--unsw-blue);
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 0.85rem;
+        font-weight: 700;
+        border: 1px solid #bbdefb;
+    }
+
+    /* TWO COLUMNS (Bookings) */
+    .mw-cols {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 30px;
+    }
+    @media (max-width: 768px) {
+        .mw-cols { grid-template-columns: 1fr; }
+    }
+
+    /* CHECKLISTS */
+    .mw-checklist { list-style: none; padding: 0; margin: 0; }
+    .mw-checklist li {
+        padding: 10px 0;
+        border-bottom: 1px dashed #eee;
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    .mw-checklist li::before {
+        content: "✓";
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-width: 20px;
+        height: 20px;
+        background: #28a745;
+        color: white;
+        border-radius: 50%;
+        font-size: 12px;
+        font-weight: bold;
+        margin-top: 2px;
+    }
+
+    /* --- TIMETABLE BLOCKS STYLING --- */
+    .mw-timetable-block {
+        background: white;
+        border: 1px solid #ddd;
+        border-left: 6px solid var(--unsw-blue);
+        border-radius: 6px;
+        padding: 25px;
+        margin: 30px auto;
+        max-width: 1100px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        font-family: 'Segoe UI', sans-serif;
+    }
+    .mw-tt-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 15px;
+    }
+    .mw-tt-header h3 { margin: 0; color: var(--unsw-blue); font-size: 1.4rem; }
+    .mw-tt-badge { 
+        background: #e6f0ff; color: var(--unsw-blue); 
+        padding: 5px 12px; border-radius: 20px; font-weight: bold; font-size: 0.9rem;
+    }
+
+    /* PREVIEW LABEL FOR TEST FILE */
+    .preview-label {
+        max-width: 1100px; margin: 50px auto 10px auto; 
+        color: #888; text-transform: uppercase; font-size: 0.8rem; 
+        letter-spacing: 1px; font-weight: bold; border-bottom: 1px dashed #ccc; 
+        padding-bottom: 5px;
+    }
+
+</style>
+</head>
+<body class="mw-body">
+
+    <div class="preview-label">Block A: Main Dashboard (Visible to All)</div>
+
+    <div class="mw-container">
+        
+        <div class="mw-hero">
+            <h1>Morphing Wing Project</h1>
+            <p><strong>DESN1000 | Term 1, 2026</strong></p>
+            <p>Welcome to the engineering design process. Immerse yourself in hands-on prototyping, teamwork, and technical problem solving.</p>
+        </div>
+
+        <div class="mw-grid">
+            <div class="mw-card">
+                <span class="mw-icon">📂</span>
+                <h3>SharePoint</h3>
+                <p><strong>Resource Hub</strong><br>Access all lecture slides & materials via Teams homepage.</p>
+            </div>
+            <div class="mw-card">
+                <span class="mw-icon">💬</span>
+                <h3>MS Teams</h3>
+                <p><strong>Collaboration Space</strong><br>Day-to-day announcements & team channels.</p>
+            </div>
+            <div class="mw-card">
+                <span class="mw-icon">📅</span>
+                <h3>Moodle</h3>
+                <p><strong>Admin Portal</strong><br>Assignment submissions & machine bookings.</p>
+            </div>
+            <div class="mw-card">
+                <span class="mw-icon">❓</span>
+                <h3>Support</h3>
+                <p><strong>Q&A</strong><br>Post in Teams so everyone benefits.</p>
+            </div>
+        </div>
+
+        <div class="mw-section">
+            <h2 class="mw-title">🚀 Navigating Week 1</h2>
+            <div class="mw-alert">
+                <span style="font-size: 1.5rem;">ℹ️</span>
+                <div>
+                    <strong>Mission Objective:</strong> Week 1 is all about settling in. Connect with your peers, explore your learning spaces, and complete your <strong>Team Contract</strong>.
+                </div>
+            </div>
+            <table class="mw-table">
+                <thead>
+                    <tr>
+                        <th width="20%">Activity</th>
+                        <th width="35%">Location</th>
+                        <th>Details</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Stream & Group</strong></td>
+                        <td>Check Timetable Below</td>
+                        <td>Find your allocated stream (1-4) and Group (A, B, C...) on Moodle.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>First Lecture</strong></td>
+                        <td>Check Timetable Below</td>
+                        <td>Introduction to project, teaching team, and course plan.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Project Class</strong></td>
+                        <td>Ainsworth DNS (K-J17-505)</td>
+                        <td>Team introductions, idea sharing, and completing team contract.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Technical Class</strong></td>
+                        <td>Willis Annexe J18-105</td>
+                        <td><strong>Sheet Metal Fabrication:</strong> Just like real aircraft, built from thin sheets and rivets.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="mw-section" style="background-color: #fafafa;">
+            <h2 class="mw-title">📝 Assessments</h2>
+            <p style="margin-bottom: 20px;">There are five assessments. All are completed as a team. Collaboration is key.</p>
+            <table class="mw-table">
+                <thead>
+                    <tr>
+                        <th width="15%">Due Date</th>
+                        <th>Assessment Name</th>
+                        <th width="15%">Type</th>
+                        <th width="10%">Weight</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Week 5</strong><br><span style="font-size:0.8rem; color:#666;">Fri 5pm</span></td>
+                        <td>Engineering Design Plan Report</td>
+                        <td>Report</td>
+                        <td><span class="mw-badge">20%</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Week 8</strong><br><span style="font-size:0.8rem; color:#666;">Sun 11pm</span></td>
+                        <td>Initial Design, Prototyping & Perf.</td>
+                        <td>Report</td>
+                        <td><span class="mw-badge">20%</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Week 10</strong><br><span style="font-size:0.8rem; color:#666;">Book Req.</span></td>
+                        <td>Innovator Factor</td>
+                        <td>Pres</td>
+                        <td><span class="mw-badge">20%</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Week 10</strong><br><span style="font-size:0.8rem; color:#666;">Book Req.</span></td>
+                        <td>Project Pitch and Viva</td>
+                        <td>Q&A</td>
+                        <td><span class="mw-badge">20%</span></td>
+                    </tr>
+                     <tr>
+                        <td><strong>Week 10</strong><br><span style="font-size:0.8rem; color:#666;">Sun 11pm</span></td>
+                        <td>Engineering Iterative Design Report</td>
+                        <td>Report</td>
+                        <td><span class="mw-badge">20%</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="mw-section">
+            <h2 class="mw-title">💻 Install SolidWorks (New)</h2>
+            <p><strong>Windows Only.</strong> Mac users must use Boot Camp, Parallels, or Lab PCs.</p>
+            
+            <div class="mw-terminal">
+                <div class="mw-terminal-header">
+                    root@unsw-desn1000:~# install_solidworks_2025.exe
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <span style="color:#4caf50;">></span> Initiating Student License Protocol...<br>
+                    <span style="color:#4caf50;">></span> Version: <strong>2025 SP4.0</strong><br>
+                    <span style="color:#4caf50;">></span> Expiry: July 31, 2027
+                </div>
+                
+                <p><strong>STEP 1:</strong> Go to SolidWorks Community Download.<br>
+                <strong>STEP 2:</strong> Use email: <span style="color: #fff;">zID@ad.unsw.edu.au</span><br>
+                <strong>STEP 3:</strong> Select "Student" -> "2025 SP4.0"</p>
+                
+                <div style="background:rgba(255,255,255,0.05); padding:15px; border-radius:4px; margin-top:15px;">
+                    <span style="color:#888; font-size:0.8rem;">USE SERIAL NUMBER:</span><br>
+                    <span class="mw-code-highlight">9020 0084 7811 3651 H9RJ 8K75</span>
+                </div>
+
+                <div style="margin-top: 20px; border-top: 1px solid #444; padding-top: 15px;">
+                    <span style="color:#ff5252; font-weight:bold;">[WARNING]</span> During installation, <strong>UNTICK "SOLIDWORKS Electrical"</strong> to prevent SQL Server errors.
+                </div>
+
+                <a href="https://www.solidworks.com/support/community-download#no-back" target="_blank" class="mw-btn-dl">Request Download ></a>
+            </div>
+        </div>
+
+        <div class="mw-section">
+            <h2 class="mw-title">📅 Facility Bookings</h2>
+            
+            <div class="mw-cols">
+                <div style="background: #eef4ff; padding: 20px; border-radius: 8px;">
+                    <h3 style="color: var(--unsw-blue); margin-top:0;">💨 Wind Tunnel</h3>
+                    <p style="font-size:0.9rem;"><strong>Moodle Booking Required.</strong> One per group. Must be compliant before testing.</p>
+                    
+                    <div style="background:white; padding:15px; border-radius:6px; border:1px solid #dae0e5; margin-top:15px;">
+                        <strong style="color:#d32f2f;">Testing Checklist:</strong>
+                        <ul class="mw-checklist">
+                            <li>Mount correct location</li>
+                            <li>Prototype assembled</li>
+                            <li>Arduino wired & coded</li>
+                            <li>Servo/Power operational</li>
+                            <li>Data sheet ready</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div style="background: #fff3e0; padding: 20px; border-radius: 8px;">
+                    <h3 style="color: #e65100; margin-top:0;">⚙️ CNC & Vacuum Former</h3>
+                    <p style="font-size:0.9rem;"><strong>Wednesdays Only (Weeks 2-5).</strong><br>After Week 5, access is closed.</p>
+                    
+                    <div style="background:white; padding:15px; border-radius:6px; border:1px solid #ffe0b2; margin-top:15px;">
+                        <strong>Procedure:</strong>
+                        <ol style="padding-left:20px; margin:10px 0; font-size:0.9rem;">
+                            <li>Book 30-min consultation.</li>
+                            <li>Prepare CAD design.</li>
+                            <li>Present for approval.</li>
+                            <li>Proceed to machine.</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="preview-label">Block B: Stream 1 Timetable (Restrict to Stream 1 Group)</div>
+    <div class="mw-timetable-block">
+        <div class="mw-tt-header">
+            <h3>Stream 1 (6654)</h3>
+            <span class="mw-tt-badge">Mon / Thu</span>
+        </div>
+        
+        <div class="mw-alert" style="margin-bottom: 20px; padding: 10px;">
+            <strong>⚠️ Mandatory:</strong> Attend your allocated room to be placed in your group.
+        </div>
+
+        <table class="mw-table" style="border:none;">
+            <thead>
+                <tr>
+                    <th width="15%" style="border-radius: 4px 0 0 4px;">Time</th>
+                    <th>Monday</th>
+                    <th style="border-radius: 0 4px 4px 0;">Thursday</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>2–3pm</strong></td>
+                    <td>Lecture 1 – Science Theatre (K-F13-G09)</td>
+                    <td>Lecture 2 – Mathew Theatre A (K-D23-201)</td>
+                </tr>
+                <tr>
+                    <td><strong>3–5pm</strong></td>
+                    <td><strong>Project Class</strong> – Ainsworth DNS<br><small>(K-J17-505)</small></td>
+                    <td><strong>Technical Class</strong> – Ainsworth 203<br><small>(K-J17-203)</small></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="preview-label">Block C: Stream 2 Timetable (Restrict to Stream 2 Group)</div>
+    <div class="mw-timetable-block" style="border-left-color: #28a745;">
+        <div class="mw-tt-header">
+            <h3 style="color:#28a745;">Stream 2 (6655)</h3>
+            <span class="mw-tt-badge" style="color:#28a745; background:#e8f5e9;">Mon / Thu</span>
+        </div>
+        
+        <div class="mw-alert" style="margin-bottom: 20px; padding: 10px;">
+            <strong>⚠️ Mandatory:</strong> Attend your allocated room to be placed in your group.
+        </div>
+
+        <table class="mw-table" style="border:none;">
+            <thead>
+                <tr>
+                    <th width="15%" style="border-radius: 4px 0 0 4px; background:#28a745;">Time</th>
+                    <th style="background:#28a745;">Monday</th>
+                    <th style="border-radius: 0 4px 4px 0; background:#28a745;">Thursday</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>2–3pm</strong></td>
+                    <td>Lecture 1 – Science Theatre (K-F13-G09)</td>
+                    <td>Lecture 2 – Mathew Theatre A (K-D23-201)</td>
+                </tr>
+                <tr>
+                    <td><strong>3–5pm</strong></td>
+                    <td><strong>Technical Class</strong> – Ainsworth 203<br><small>(K-J17-203)</small></td>
+                    <td><strong>Project Class</strong> – Ainsworth DNS<br><small>(K-J17-505)</small></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="preview-label">Block D: Stream 3 Timetable (Restrict to Stream 3 Group)</div>
+    <div class="mw-timetable-block" style="border-left-color: #fd7e14;">
+        <div class="mw-tt-header">
+            <h3 style="color:#fd7e14;">Stream 3 (6661)</h3>
+            <span class="mw-tt-badge" style="color:#fd7e14; background:#fff3e0;">Wed / Fri</span>
+        </div>
+        
+        <div class="mw-alert" style="margin-bottom: 20px; padding: 10px;">
+            <strong>⚠️ Mandatory:</strong> Attend your allocated room to be placed in your group.
+        </div>
+
+        <table class="mw-table" style="border:none;">
+            <thead>
+                <tr>
+                    <th width="15%" style="border-radius: 4px 0 0 4px; background:#fd7e14;">Time</th>
+                    <th style="background:#fd7e14;">Wednesday</th>
+                    <th style="border-radius: 0 4px 4px 0; background:#fd7e14;">Friday</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>9–10am</strong></td>
+                    <td>Lecture 1 – Mathew Theatre A (K-D23-201)</td>
+                    <td>Lecture 2 – Mathew Theatre A (K-D23-201)</td>
+                </tr>
+                <tr>
+                    <td><strong>10am–12pm</strong></td>
+                    <td><strong>Project Class</strong> – Ainsworth DNS<br><small>(K-J17-505)</small></td>
+                    <td><strong>Technical Class</strong> – Ainsworth 203<br><small>(K-J17-203)</small></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="preview-label">Block E: Stream 4 Timetable (Restrict to Stream 4 Group)</div>
+    <div class="mw-timetable-block" style="border-left-color: #17a2b8;">
+        <div class="mw-tt-header">
+            <h3 style="color:#17a2b8;">Stream 4 (6662)</h3>
+            <span class="mw-tt-badge" style="color:#17a2b8; background:#e0f7fa;">Wed / Fri</span>
+        </div>
+        
+        <div class="mw-alert" style="margin-bottom: 20px; padding: 10px;">
+            <strong>⚠️ Mandatory:</strong> Attend your allocated room to be placed in your group.
+        </div>
+
+        <table class="mw-table" style="border:none;">
+            <thead>
+                <tr>
+                    <th width="15%" style="border-radius: 4px 0 0 4px; background:#17a2b8;">Time</th>
+                    <th style="background:#17a2b8;">Wednesday</th>
+                    <th style="border-radius: 0 4px 4px 0; background:#17a2b8;">Friday</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>9–10am</strong></td>
+                    <td>Lecture 1 – Mathew Theatre A (K-D23-201)</td>
+                    <td>Lecture 2 – Mathew Theatre A (K-D23-201)</td>
+                </tr>
+                <tr>
+                    <td><strong>10am–12pm</strong></td>
+                    <td><strong>Technical Class</strong> – Ainsworth 203<br><small>(K-J17-203)</small></td>
+                    <td><strong>Project Class</strong> – Ainsworth DNS<br><small>(K-J17-505)</small></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+</body>
+</html>
