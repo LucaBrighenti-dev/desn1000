@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DESN1000 Moodle Mockup</title>
+    <style>
+        /* --- COPY FROM HERE DOWN INTO MOODLE --- */
+
+        /* GLOBAL RESET FOR PREVIEW (Moodle already has this) */
+        body { margin: 0; padding: 20px; background-color: #f2f2f2; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+
+        /* ENGINEERING DASHBOARD THEME */
+        .eng-dashboard {
+            color: #333;
+            background-color: #ffffff;
+            max-width: 1000px;
+            margin: 0 auto 30px auto; /* Margin bottom for spacing */
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            border-top: 5px solid #ffcc00; /* UNSW Yellow Accent */
+        }
+        
+        /* HEADERS */
+        .eng-header {
+            border-left: 6px solid #002664; /* Engineering Blue */
+            padding-left: 20px;
+            margin-bottom: 30px;
+        }
+        .eng-header h1 {
+            margin: 0;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #1a1a1a;
+            font-size: 2.2rem;
+            line-height: 1.2;
+        }
+        .eng-header p {
+            color: #666;
+            font-size: 1.1rem;
+            margin-top: 5px;
+            font-weight: 500;
+        }
+
+        /* ALERTS */
+        .eng-alert {
+            background: #fff3cd;
+            border: 1px solid #ffeeba;
+            color: #856404;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            font-weight: 500;
+        }
+        .eng-alert-icon { font-size: 1.5rem; margin-right: 15px; }
+
+        /* GRID LAYOUT FOR STEPS */
+        .eng-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        
+        .eng-card {
+            background: #f8f9fa;
+            border-top: 4px solid #002664; /* Engineering Blue */
+            padding: 20px;
+            border-radius: 4px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            transition: transform 0.2s;
+        }
+        .eng-card:hover { transform: translateY(-3px); }
+        .eng-card h3 { color: #002664; margin-top: 0; font-size: 1.2rem; }
+        .eng-card ul { padding-left: 20px; margin-bottom: 0; }
+        .eng-card li { margin-bottom: 8px; font-size: 0.95rem; line-height: 1.4; }
+
+        /* COURSE STRUCTURE TABLE */
+        .eng-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+        }
+        .eng-table th {
+            background: #002664;
+            color: white;
+            text-align: left;
+            padding: 12px;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 0.5px;
+        }
+        .eng-table td {
+            border-bottom: 1px solid #eee;
+            padding: 12px;
+            vertical-align: top;
+            color: #444;
+        }
+        .eng-table tr:last-child td { border-bottom: none; }
+
+        /* INDIVIDUAL TIMETABLE BLOCKS */
+        .timetable-block {
+            font-family: 'Segoe UI', sans-serif;
+            background: #fff;
+            border: 1px solid #ddd;
+            padding: 25px;
+            border-radius: 8px;
+            margin: 20px auto;
+            max-width: 1000px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        .timetable-header { margin-top: 0; display: flex; align-items: center; gap: 10px; }
+        .degree-tag { padding: 8px 12px; border-radius: 4px; font-size: 0.85rem; display: inline-block; margin-bottom: 15px; font-weight: 600; }
+
+        /* FOOTER */
+        .eng-footer {
+            margin-top: 40px;
+            border-top: 1px solid #ddd;
+            padding-top: 20px;
+            font-style: italic;
+            color: #555;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .eng-footer img {
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            background: #ddd;
+        }
+        
+        /* HELPER FOR PREVIEW ONLY - REMOVE WHEN IN MOODLE */
+        .preview-label {
+            max-width: 1000px; margin: 40px auto 10px auto; color: #888; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 1px; font-weight: bold; border-bottom: 1px dashed #ccc; padding-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="preview-label">Block 1: Common Dashboard (Visible to Everyone)</div>
+
+    <div class="eng-dashboard">
+
+        <div class="eng-header">
+            <h1>DESN1000: Engineering Design</h1>
+            <p>Mission Status: Active | Term 1, 2026</p>
+        </div>
+
+        <div class="eng-alert">
+            <span class="eng-alert-icon">⚠️</span>
+            <div>
+                <strong>Timetable Update:</strong> Please check the allocated schedule below. All classes are mandatory and on-campus.
+            </div>
+        </div>
+
+        <p style="line-height: 1.6;">Welcome to the flagship course of your engineering degree. Working in multidisciplinary teams, you’ll design and build a functional prototype in response to a real-world engineering brief. This term, you have been allocated a project that reflects your engineering discipline.</p>
+        
+        <hr style="border: 0; border-top: 1px solid #e0e0e0; margin: 30px 0;">
+
+        <h2 style="color:#002664; margin-bottom: 20px;">Getting Started Protocol</h2>
+
+        <div class="eng-grid">
+            
+            <div class="eng-card">
+                <h3>1. Comms Uplink</h3>
+                <p><strong>Microsoft Teams</strong> is your primary communication tool. Turn on notifications.</p>
+                <ul>
+                    <li>Communicate with your team.</li>
+                    <li>Ask demonstrators for help.</li>
+                    <li><strong>Moodle</strong> is for official announcements & marks.</li>
+                </ul>
+            </div>
+
+            <div class="eng-card" style="border-top-color: #d9534f;">
+                <h3>2. PPE Requirements</h3>
+                <p>No PPE = No Workshop Access. This is non-negotiable professional practice.</p>
+                <ul>
+                    <li><strong>Enclosed shoes</strong> (Mandatory)</li>
+                    <li>Safety glasses (Provided or BYO)</li>
+                    <li>Long hair tied back</li>
+                    <li>Loose clothing secured</li>
+                </ul>
+            </div>
+
+            <div class="eng-card" style="border-top-color: #ffcc00;">
+                <h3>3. Makerspace Induction</h3>
+                <p>You must be inducted to use the tools.</p>
+                <div style="margin-top:15px;">
+                    <a href="#" style="background: #333; color: white; padding: 8px 15px; text-decoration: none; border-radius: 4px; font-size: 0.85rem; display: inline-block;">Launch Induction Module &rarr;</a>
+                </div>
+            </div>
+        </div>
+
+        <h2 style="color:#002664; margin-bottom: 20px;">Course Components</h2>
+        <table class="eng-table">
+            <thead>
+                <tr>
+                    <th width="20%">Component</th>
+                    <th>Objective</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Lecture</strong></td>
+                    <td>Key engineering concepts, project requirements, and shared foundations.</td>
+                </tr>
+                <tr>
+                    <td><strong>Project Class</strong></td>
+                    <td>Hands-on team work to design, build, and test your prototype.</td>
+                </tr>
+                <tr>
+                    <td><strong>Technical Class</strong></td>
+                    <td>Skill building: CAD, 3D printing, laser cutting, and embedded systems.</td>
+                </tr>
+                 <tr>
+                    <td><strong>Professional Skills</strong></td>
+                    <td>Teamwork, communication, and project management.</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="eng-footer">
+            <img src="https://via.placeholder.com/60" alt="Dr Elizabeth Kyriakou"> 
+            <div>
+                <strong>Dr Elizabeth Kyriakou</strong><br>
+                Course Convenor & Director of Undergraduate Community<br>
+                <span style="font-size: 0.85rem; color: #777;">School of Mechanical and Manufacturing Engineering</span>
+            </div>
+        </div>
+
+    </div>
+    <div class="preview-label">Block 2: MME Timetable (Visible ONLY to MME Group)</div>
+
+    <div class="timetable-block" style="border-left: 5px solid #002664;">
+        <h2 class="timetable-header" style="color: #002664;">🛠️ MME Project Allocation</h2>
+        <div class="degree-tag" style="background: #e6f0ff; color: #002664;">
+            Degrees: Mechanical, Aerospace, Mechatronics, Computer, Materials, Biomedical, Flexi
+        </div>
+
+        <table class="eng-table">
+            <thead style="background: #eee;">
+                <tr>
+                    <th style="background:#ddd; color:#333; border-bottom: 2px solid #ccc;">Stream</th>
+                    <th style="background:#ddd; color:#333; border-bottom: 2px solid #ccc;">Class #</th>
+                    <th style="background:#ddd; color:#333; border-bottom: 2px solid #ccc;">Schedule</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Stream 1</strong></td>
+                    <td>6664</td>
+                    <td>
+                        <strong>Mon 14-17</strong> (Ainswth505)<br>
+                        <strong>Thu 14-17</strong> (Ainswth203)<br>
+                        <em style="color:#666; font-size:0.8rem;">*Check Moodle for Week 1 room changes</em>
+                    </td>
+                </tr>
+                <tr>
+                    <td><strong>Stream 2</strong></td>
+                    <td>6665</td>
+                    <td>
+                        <strong>Mon 14-17</strong> (Ainswth203)<br>
+                        <strong>Thu 14-17</strong> (Ainswth505)
+                    </td>
+                </tr>
+                 <tr>
+                    <td><strong>Stream 3</strong></td>
+                    <td>6661</td>
+                    <td>
+                        <strong>Wed 09-12</strong> (See School)<br>
+                        <strong>Fri 09-12</strong> (Ainswth203)
+                    </td>
+                </tr>
+                 <tr>
+                    <td><strong>Stream 4</strong></td>
+                    <td>6662</td>
+                    <td>
+                        <strong>Wed 09-12</strong> (Ainswth203)<br>
+                        <strong>Fri 09-12</strong> (See School)
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+
+    <div class="preview-label">Block 3: SOFTWARE Timetable (Visible ONLY to Software Group)</div>
+
+    <div class="timetable-block" style="border-left: 5px solid #28a745;">
+        <h2 class="timetable-header" style="color: #28a745;">💻 Software Project Allocation</h2>
+        <div class="degree-tag" style="background: #e6ffed; color: #155724;">
+            Degrees: Software, Bioinformatic
+        </div>
+
+        <table class="eng-table">
+            <thead style="background: #eee;">
+                <tr>
+                    <th style="background:#ddd; color:#333; border-bottom: 2px solid #ccc;">Type</th>
+                    <th style="background:#ddd; color:#333; border-bottom: 2px solid #ccc;">Class #</th>
+                    <th style="background:#ddd; color:#333; border-bottom: 2px solid #ccc;">Schedule</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>LEC</strong></td>
+                    <td>6643</td>
+                    <td><strong>Mon 14-16</strong> (OShane G06)</td>
+                </tr>
+                <tr>
+                    <td><strong>LAB</strong></td>
+                    <td>6648</td>
+                    <td><strong>Thu 11-13</strong> (StrngME302)</td>
+                </tr>
+                 <tr>
+                    <td><strong>LAB</strong></td>
+                    <td>6652</td>
+                    <td><strong>Thu 15-17</strong> (FluteME303)</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+
+    <div class="preview-label">Block 4: ELEC Timetable (Visible ONLY to ELEC Group)</div>
+
+    <div class="timetable-block" style="border-left: 5px solid #fd7e14;">
+        <h2 class="timetable-header" style="color: #fd7e14;">⚡ ELEC Project Allocation</h2>
+        <div class="degree-tag" style="background: #fff3e6; color: #a84700;">
+            Degrees: Electrical, PV, Renewable, Quantum
+        </div>
+
+        <table class="eng-table">
+            <thead style="background: #eee;">
+                <tr>
+                    <th style="background:#ddd; color:#333;">Type</th>
+                    <th style="background:#ddd; color:#333;">Class #</th>
+                    <th style="background:#ddd; color:#333;">Schedule</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>LEC</strong></td>
+                    <td>6642</td>
+                    <td><strong>Thu 14-16</strong> (OShane 104)</td>
+                </tr>
+                <tr>
+                    <td><strong>LAB</strong></td>
+                    <td>6657</td>
+                    <td><strong>Mon 14-17</strong> (ElecEng201)<br><strong>Thu 14-17</strong> (ElecEng201)</td>
+                </tr>
+                 <tr>
+                    <td><strong>LAB</strong></td>
+                    <td>12746</td>
+                    <td><strong>Mon 14-17</strong> (ElecEng214)<br><strong>Thu 14-17</strong> (ElecEng214)</td>
+                </tr>
+                <tr>
+                    <td><strong>LAB</strong></td>
+                    <td>12748</td>
+                    <td><strong>Mon 14-17</strong> (ElecEngG14)<br><strong>Thu 14-17</strong> (ElecEngG14)</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+
+    <div class="preview-label">Block 5: CHEM & MERE Timetables (Visible ONLY to respective Groups)</div>
+
+    <div class="timetable-block" style="border-left: 5px solid #17a2b8;">
+        <h2 class="timetable-header" style="color: #17a2b8;">🧪 CHEM Project Allocation</h2>
+        <div class="degree-tag" style="background: #e0faff; color: #0c5460;">
+            Degrees: Chemical
+        </div>
+
+        <table class="eng-table">
+            <thead style="background: #eee;">
+                <tr>
+                    <th style="background:#ddd; color:#333;">Type</th>
+                    <th style="background:#ddd; color:#333;">Class #</th>
+                    <th style="background:#ddd; color:#333;">Schedule</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>LEC</strong></td>
+                    <td>6644</td>
+                    <td>
+                        <strong>Mon 14-17</strong> (w2 MathewsThD / w3 SEB102)<br>
+                        <strong>Thu 14-17</strong> (w1 TETB / w2,5 Ainswth202)
+                    </td>
+                </tr>
+                <tr>
+                    <td><strong>LAB</strong></td>
+                    <td>6658</td>
+                    <td><strong>Thu 15-17</strong> (SEB102)<br><strong>Mon 14-17</strong> (w1,5,7-10 SEB102)</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="timetable-block" style="border-left: 5px solid #6f42c1;">
+        <h2 class="timetable-header" style="color: #6f42c1;">🌍 MERE Project Allocation</h2>
+        <div class="degree-tag" style="background: #f3eaff; color: #3d1c75;">
+            Degrees: Mining, Geostorage, Civil
+        </div>
+
+        <table class="eng-table">
+            <thead style="background: #eee;">
+                <tr>
+                    <th style="background:#ddd; color:#333;">Type</th>
+                    <th style="background:#ddd; color:#333;">Class #</th>
+                    <th style="background:#ddd; color:#333;">Schedule</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>LAB</strong></td>
+                    <td>6663 / 12761</td>
+                    <td>
+                        <strong>Wed 09-12</strong> (Law Th G23)<br>
+                        <strong>Fri 09-12</strong> (ColomboThB)
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+</body>
+</html>
