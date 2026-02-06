@@ -1079,10 +1079,14 @@
         // WIND TUNNEL BOOKING SYSTEM
         // ============================================
 
-        let selectedSlot = null;
-        let bookedSlots = [];
+        // Check Firebase loaded correctly
+        if (typeof firebase === 'undefined' || typeof db === 'undefined') {
+            console.error('Firebase failed to load. Check firebase-config.js and network connection.');
+            document.getElementById('slotGrid').innerHTML = '<p style="color:#ef4444; grid-column:1/-1; text-align:center; padding:20px;">⚠️ Booking system failed to connect. Please check your internet connection and refresh.</p>';
+        }
 
-        // Time slot definitions based on testing type and day
+        let selectedSlot = null;
+
         const PRACTICE_WEEKS = [3, 4, 5, 8, 9];
         const FORMAL_WEEKS = [7, 10];
 
@@ -1104,46 +1108,34 @@
             const isMonThu = (day === 'monday' || day === 'thursday');
             if (testingType === 'practice') {
                 if (isMonThu) {
-                    // 12-2pm and 3-5pm
-                    return [
-                        ...generateTimeSlots(12, 0, 14, 0, 20),
-                        ...generateTimeSlots(15, 0, 17, 0, 20)
-                    ];
+                    return [...generateTimeSlots(12, 0, 14, 0, 20), ...generateTimeSlots(15, 0, 17, 0, 20)];
                 } else {
-                    // 10am-2pm
                     return generateTimeSlots(10, 0, 14, 0, 20);
                 }
             } else if (testingType === 'formal') {
                 if (isMonThu) {
-                    // 12-5pm
                     return generateTimeSlots(12, 0, 17, 0, 20);
                 } else {
-                    // 9am-1pm
                     return generateTimeSlots(9, 0, 13, 0, 20);
                 }
             }
             return [];
         }
 
-        // Update week dropdown based on testing type
+        // Update week dropdown when testing type changes
         document.getElementById('testingType').addEventListener('change', function() {
             const weekSelect = document.getElementById('week');
-            const type = this.value;
             weekSelect.innerHTML = '<option value="">Select week...</option>';
-
-            const weeks = type === 'practice' ? PRACTICE_WEEKS : type === 'formal' ? FORMAL_WEEKS : [];
-            weeks.forEach(w => {
-                weekSelect.innerHTML += `<option value="${w}">Week ${w}</option>`;
-            });
+            const weeks = this.value === 'practice' ? PRACTICE_WEEKS : this.value === 'formal' ? FORMAL_WEEKS : [];
+            weeks.forEach(w => { weekSelect.innerHTML += `<option value="${w}">Week ${w}</option>`; });
         });
 
-        // Load slots when all three selections are made
+        // Load slots when selections change
         async function onSelectionChange() {
             const testingType = document.getElementById('testingType').value;
             const week = document.getElementById('week').value;
             const day = document.getElementById('day').value;
             const slotGrid = document.getElementById('slotGrid');
-
             selectedSlot = null;
 
             if (!testingType || !week || !day) {
@@ -1151,25 +1143,29 @@
                 return;
             }
 
-            // Show loading
             slotGrid.innerHTML = '<p style="color: var(--text-secondary); grid-column: 1/-1; text-align: center; padding: 20px;">Loading available slots...</p>';
 
-            // Get booked slots from Firestore
+            // Build a unique lookup key for this combination
+            const lookupKey = `wind-tunnel_${testingType}_${week}_${day}`;
+            let bookedSlots = [];
+
             try {
+                // Simple query: get ALL wind tunnel bookings, filter client-side
                 const snapshot = await db.collection('bookings')
                     .where('facility', '==', 'wind-tunnel')
-                    .where('testingType', '==', testingType)
-                    .where('week', '==', parseInt(week))
-                    .where('day', '==', day)
                     .get();
 
-                bookedSlots = snapshot.docs.map(doc => doc.data().timeSlot);
+                snapshot.docs.forEach(doc => {
+                    const d = doc.data();
+                    if (d.testingType === testingType && d.week === parseInt(week) && d.day === day) {
+                        bookedSlots.push(d.timeSlot);
+                    }
+                });
             } catch (error) {
                 console.error('Error loading bookings:', error);
-                bookedSlots = [];
+                // Continue with empty booked list — slots just won't show as taken
             }
 
-            // Generate slot grid
             const slots = getSlots(testingType, day);
             slotGrid.innerHTML = '';
 
@@ -1188,7 +1184,12 @@
                 `;
                 if (!isBooked) {
                     div.addEventListener('click', function() {
-                        document.querySelectorAll('.slot').forEach(s => s.classList.remove('slot-selected'));
+                        document.querySelectorAll('.slot').forEach(s => {
+                            s.classList.remove('slot-selected');
+                            if (!s.classList.contains('slot-unavailable')) {
+                                s.querySelector('.slot-status').textContent = 'Available';
+                            }
+                        });
                         this.classList.add('slot-selected');
                         this.querySelector('.slot-status').textContent = 'Selected';
                         selectedSlot = time;
@@ -1198,7 +1199,7 @@
             });
         }
 
-        // Submit booking to Firestore
+        // Submit booking
         async function submitBooking() {
             const testingType = document.getElementById('testingType').value;
             const week = document.getElementById('week').value;
@@ -1209,19 +1210,16 @@
             const errorEl = document.getElementById('formError');
             const submitBtn = document.getElementById('submitBtn');
 
-            // Validation
             if (!testingType || !week || !day || !selectedSlot || !teamName || !zid || !email) {
                 errorEl.textContent = 'Please fill in all fields and select a time slot.';
                 errorEl.style.display = 'block';
                 return;
             }
-
             if (!zid.match(/^z\d{7}$/i)) {
                 errorEl.textContent = 'Please enter a valid zID (e.g., z5123456).';
                 errorEl.style.display = 'block';
                 return;
             }
-
             if (!email.includes('@') || !email.includes('.')) {
                 errorEl.textContent = 'Please enter a valid email address.';
                 errorEl.style.display = 'block';
@@ -1232,26 +1230,16 @@
             submitBtn.disabled = true;
             submitBtn.textContent = 'Booking...';
 
+            // Timeout safety — if nothing happens in 15 seconds, show error
+            const timeout = setTimeout(() => {
+                errorEl.textContent = 'Booking is taking too long. Please check your internet connection and try again.';
+                errorEl.style.display = 'block';
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Book This Slot →';
+            }, 15000);
+
             try {
-                // Double-check the slot is still available
-                const check = await db.collection('bookings')
-                    .where('facility', '==', 'wind-tunnel')
-                    .where('testingType', '==', testingType)
-                    .where('week', '==', parseInt(week))
-                    .where('day', '==', day)
-                    .where('timeSlot', '==', selectedSlot)
-                    .get();
-
-                if (!check.empty) {
-                    errorEl.textContent = 'Sorry, this slot was just booked by someone else. Please select another slot.';
-                    errorEl.style.display = 'block';
-                    submitBtn.disabled = false;
-                    submitBtn.textContent = 'Book This Slot →';
-                    onSelectionChange(); // Refresh slots
-                    return;
-                }
-
-                // Submit the booking
+                // Write the booking directly to Firestore
                 await db.collection('bookings').add({
                     facility: 'wind-tunnel',
                     testingType: testingType,
@@ -1264,6 +1252,8 @@
                     createdAt: firebase.firestore.FieldValue.serverTimestamp()
                 });
 
+                clearTimeout(timeout);
+
                 // Show success
                 document.getElementById('bookingForm').style.display = 'none';
                 const successEl = document.getElementById('bookingSuccess');
@@ -1272,8 +1262,9 @@
                     `${teamName} is booked for ${testingType} testing — Week ${week}, ${day.charAt(0).toUpperCase() + day.slice(1)} at ${selectedSlot}.`;
 
             } catch (error) {
+                clearTimeout(timeout);
                 console.error('Booking error:', error);
-                errorEl.textContent = 'Something went wrong. Please try again.';
+                errorEl.textContent = 'Booking failed: ' + (error.message || 'Unknown error. Check your internet connection.');
                 errorEl.style.display = 'block';
                 submitBtn.disabled = false;
                 submitBtn.textContent = 'Book This Slot →';
