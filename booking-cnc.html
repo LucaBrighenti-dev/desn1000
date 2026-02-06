@@ -1,0 +1,1409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CNC & Vacuum Former Booking - DESN1000 | UNSW Engineering</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --unsw-blue: #002664;
+            --unsw-blue-light: #003d99;
+            --unsw-yellow: #ffcc00;
+            --unsw-yellow-dark: #e6b800;
+            --tech-grey: #f4f6f9;
+            --text-primary: #1a1a2e;
+            --text-secondary: #5a5a6e;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --info: #3b82f6;
+            --orange: #ea580c;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
+            --shadow-md: 0 4px 15px rgba(0,0,0,0.1);
+            --shadow-lg: 0 10px 40px rgba(0,0,0,0.12);
+            --shadow-xl: 0 20px 60px rgba(0,0,0,0.15);
+            --radius-sm: 8px;
+            --radius-md: 16px;
+            --radius-lg: 24px;
+            --transition-fast: 0.2s ease;
+            --transition-normal: 0.3s ease;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @keyframes rotateGear {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            color: var(--text-primary);
+            background: var(--tech-grey);
+            line-height: 1.6;
+        }
+
+        /* Navigation */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(63, 97, 196, 0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 220, 0, 0.2);
+            transition: all var(--transition-normal);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 70px;
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: white;
+            text-decoration: none;
+            font-family: 'Roboto', Arial, sans-serif;
+            font-weight: 800;
+            font-size: 1.5rem;
+            transition: transform var(--transition-fast);
+        }
+
+        .nav-logo:hover {
+            transform: scale(1.02);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 6px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: rgba(255, 255, 255, 0.85);
+            text-decoration: none;
+            padding: 10px 18px;
+            border-radius: var(--radius-sm);
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: all var(--transition-fast);
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 6px;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: #ffdc00;
+            transition: all var(--transition-fast);
+            transform: translateX(-50%);
+        }
+
+        .nav-links a:hover::after {
+            width: 60%;
+        }
+
+        .nav-links a:hover {
+            color: #ffdc00;
+        }
+
+        .nav-cta {
+            background: #ffdc00 !important;
+            color: #3f61c4 !important;
+            font-weight: 600 !important;
+            box-shadow: 0 4px 15px rgba(255, 220, 0, 0.3);
+        }
+
+        .nav-cta::after {
+            display: none !important;
+        }
+
+        .nav-cta:hover {
+            background: #e6c600 !important;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 220, 0, 0.4);
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: var(--radius-sm);
+            transition: background var(--transition-fast);
+        }
+
+        .mobile-menu-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Page Header */
+        .page-header {
+            background: linear-gradient(135deg, #b45309 0%, #f59e0b 100%);
+            padding: 140px 30px 80px;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .page-header::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+            animation: float 20s ease-in-out infinite;
+        }
+
+        .page-header::after {
+            content: "⚙️";
+            position: absolute;
+            right: 5%;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 15rem;
+            opacity: 0.1;
+            animation: rotateGear 30s linear infinite;
+        }
+
+        .page-header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .breadcrumb a {
+            color: white;
+            text-decoration: none;
+        }
+
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+
+        .page-header h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .page-header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 600px;
+        }
+
+        /* Main Content */
+        .main-content {
+            max-width: 1200px;
+            margin: -40px auto 60px;
+            padding: 0 30px;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* Alert Box */
+        .alert-box {
+            display: flex;
+            gap: 20px;
+            padding: 24px;
+            border-radius: var(--radius-md);
+            margin-bottom: 30px;
+            align-items: flex-start;
+        }
+
+        .alert-danger {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            border-left: 5px solid var(--danger);
+        }
+
+        .alert-warning {
+            background: #fffbeb;
+            border: 1px solid #fcd34d;
+            border-left: 5px solid var(--warning);
+        }
+
+        .alert-info {
+            background: #eff6ff;
+            border: 1px solid #93c5fd;
+            border-left: 5px solid var(--info);
+        }
+
+        .alert-icon {
+            font-size: 1.8rem;
+            flex-shrink: 0;
+        }
+
+        .alert-content h4 {
+            font-weight: 700;
+            margin-bottom: 6px;
+            color: var(--text-primary);
+        }
+
+        .alert-content p {
+            margin: 0;
+            color: var(--text-secondary);
+        }
+
+        /* Cards */
+        .content-card {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 40px;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 30px;
+            transition: transform var(--transition-normal), box-shadow var(--transition-normal);
+            border: 1px solid rgba(0,0,0,0.04);
+        }
+
+        .content-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .content-card h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--unsw-blue);
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .content-card h2::before {
+            content: "";
+            width: 5px;
+            height: 28px;
+            background: linear-gradient(180deg, var(--unsw-yellow), var(--orange));
+            border-radius: 3px;
+        }
+
+        /* Grid Layouts */
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        .three-column {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+
+        @media (max-width: 768px) {
+            .two-column, .three-column {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Machine Cards */
+        .machine-selector {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-bottom: 30px;
+        }
+
+        .machine-card {
+            background: white;
+            border: 3px solid #e5e7eb;
+            border-radius: var(--radius-lg);
+            padding: 32px;
+            cursor: pointer;
+            transition: all var(--transition-normal);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .machine-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--orange), var(--unsw-yellow));
+            transform: scaleX(0);
+            transition: transform var(--transition-normal);
+        }
+
+        .machine-card:hover {
+            border-color: var(--orange);
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-4px);
+        }
+
+        .machine-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .machine-card.selected {
+            border-color: var(--orange);
+            background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%);
+        }
+
+        .machine-card.selected::before {
+            transform: scaleX(1);
+        }
+
+        .machine-icon {
+            font-size: 3.5rem;
+            margin-bottom: 16px;
+            display: inline-block;
+            transition: transform var(--transition-normal);
+        }
+
+        .machine-card:hover .machine-icon {
+            transform: scale(1.1);
+        }
+
+        .machine-card h3 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+
+        .machine-card p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Process Steps */
+        .process-timeline {
+            position: relative;
+            padding-left: 50px;
+        }
+
+        .process-timeline::before {
+            content: "";
+            position: absolute;
+            left: 18px;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: linear-gradient(180deg, var(--orange) 0%, #fcd34d 50%, var(--unsw-yellow) 100%);
+            border-radius: 4px;
+        }
+
+        .process-step {
+            position: relative;
+            padding-bottom: 32px;
+            opacity: 0.9;
+            transition: opacity var(--transition-normal);
+        }
+
+        .process-step:hover {
+            opacity: 1;
+        }
+
+        .process-step:last-child {
+            padding-bottom: 0;
+        }
+
+        .process-step::before {
+            content: "";
+            position: absolute;
+            left: -40px;
+            top: 4px;
+            width: 22px;
+            height: 22px;
+            background: linear-gradient(135deg, var(--orange), var(--unsw-yellow));
+            border-radius: 50%;
+            border: 4px solid white;
+            box-shadow: 0 0 0 3px var(--orange), 0 4px 12px rgba(234, 88, 12, 0.3);
+            transition: transform var(--transition-fast);
+        }
+
+        .process-step:hover::before {
+            transform: scale(1.2);
+        }
+
+        .process-step h4 {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+
+        .process-step p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.7;
+        }
+
+        /* Booking Form */
+        .booking-form {
+            background: var(--tech-grey);
+            border-radius: var(--radius-md);
+            padding: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+        }
+
+        .form-group .hint {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: 6px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: var(--radius-sm);
+            font-size: 1rem;
+            font-family: inherit;
+            transition: all 0.2s;
+            background: white;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--orange);
+            box-shadow: 0 0 0 3px rgba(234, 88, 12, 0.1);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 600px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            .machine-selector {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 16px 32px;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            font-size: 1rem;
+            text-decoration: none;
+            transition: all var(--transition-normal);
+            cursor: pointer;
+            border: none;
+            font-family: inherit;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(45deg, transparent 40%, rgba(255,255,255,0.3) 50%, transparent 60%);
+            transform: translateX(-100%);
+            transition: transform 0.6s ease;
+        }
+
+        .btn:hover::before {
+            transform: translateX(100%);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--orange), #c2410c);
+            color: white;
+            width: 100%;
+            box-shadow: 0 4px 15px rgba(234, 88, 12, 0.25);
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #c2410c, var(--orange));
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(234, 88, 12, 0.35);
+        }
+
+        /* Info Cards */
+        .info-card {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 28px;
+            border: 1px solid #e5e7eb;
+            transition: all var(--transition-normal);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .info-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--orange), var(--unsw-yellow));
+            transform: scaleX(0);
+            transition: transform var(--transition-normal);
+            transform-origin: left;
+        }
+
+        .info-card:hover {
+            border-color: var(--unsw-yellow);
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-4px);
+        }
+
+        .info-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .info-card-icon {
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, #b45309 0%, #f59e0b 100%);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6rem;
+            margin-bottom: 18px;
+            box-shadow: 0 4px 12px rgba(180, 83, 9, 0.25);
+            transition: transform var(--transition-normal);
+        }
+
+        .info-card:hover .info-card-icon {
+            transform: scale(1.1) rotate(-5deg);
+        }
+
+        .info-card h3 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--unsw-blue);
+            margin-bottom: 10px;
+        }
+
+        .info-card p {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        /* Requirements List */
+        .requirements-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .requirement-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 16px;
+            background: #fff7ed;
+            border-radius: var(--radius-sm);
+            border-left: 4px solid var(--orange);
+        }
+
+        .requirement-icon {
+            font-size: 1.3rem;
+            flex-shrink: 0;
+        }
+
+        .requirement-item p {
+            margin: 0;
+            font-size: 0.95rem;
+            color: var(--text-primary);
+        }
+
+        /* Time Slots */
+        .time-slots {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .time-slot {
+            padding: 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: var(--radius-sm);
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: white;
+        }
+
+        .time-slot:hover:not(.unavailable) {
+            border-color: var(--orange);
+            background: #fff7ed;
+        }
+
+        .time-slot.selected {
+            border-color: var(--orange);
+            background: var(--orange);
+            color: white;
+        }
+
+        .time-slot.unavailable {
+            background: #fef2f2;
+            border-color: #fca5a5;
+            color: #dc2626;
+            cursor: not-allowed;
+        }
+
+        .time-slot.unavailable .duration {
+            color: #dc2626;
+            font-weight: 600;
+        }
+
+        .time-slot .time {
+            font-weight: 700;
+            font-size: 1rem;
+            display: block;
+        }
+
+        .time-slot .duration {
+            font-size: 0.8rem;
+            opacity: 0.7;
+            margin-top: 4px;
+        }
+
+        @media (max-width: 600px) {
+            .time-slots {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .requirements-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Footer */
+        .footer {
+            background: #1a1a2e;
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+
+        .footer p {
+            opacity: 0.7;
+            font-size: 0.9rem;
+        }
+
+        .footer a {
+            color: var(--unsw-yellow);
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Countdown */
+        .deadline-banner {
+            background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);
+            color: white;
+            padding: 24px 32px;
+            border-radius: var(--radius-lg);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 8px 30px rgba(220, 38, 38, 0.3);
+        }
+
+        .deadline-banner::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(45deg, transparent 40%, rgba(255,255,255,0.1) 50%, transparent 60%);
+            animation: pulse 3s ease-in-out infinite;
+        }
+
+        .deadline-banner h3 {
+            font-size: 1.3rem;
+            margin-bottom: 6px;
+            position: relative;
+        }
+
+        .deadline-banner p {
+            opacity: 0.9;
+            font-size: 0.95rem;
+            position: relative;
+        }
+
+        .countdown {
+            display: flex;
+            gap: 20px;
+            position: relative;
+        }
+
+        .countdown-item {
+            text-align: center;
+            background: rgba(255,255,255,0.15);
+            padding: 12px 16px;
+            border-radius: var(--radius-sm);
+            backdrop-filter: blur(10px);
+        }
+
+        .countdown-value {
+            font-size: 2.2rem;
+            font-weight: 800;
+            display: block;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .countdown-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            opacity: 0.9;
+            letter-spacing: 0.5px;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 24px;
+            border-bottom: 2px solid #e5e7eb;
+            padding-bottom: 8px;
+        }
+
+        .tab {
+            padding: 12px 24px;
+            border: none;
+            background: none;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            cursor: pointer;
+            border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+            transition: all 0.2s;
+        }
+
+        .tab:hover {
+            color: var(--orange);
+            background: #fff7ed;
+        }
+
+        .tab.active {
+            color: var(--orange);
+            background: #fff7ed;
+            border-bottom: 3px solid var(--orange);
+            margin-bottom: -10px;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">
+                DESN1000 Engineering Design and Innovation
+            </a>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="index.html#gallery">Gallery</a></li>
+                <li><a href="index.html#timetable">Timetable</a></li>
+                <li><a href="index.html#resources">Resources</a></li>
+                <li><a href="index.html#assessments">Assessments</a></li>
+                <li><a href="index.html#bookings" style="color: #ffdc00;">Bookings</a></li>
+                <li><a href="https://moodle.telt.unsw.edu.au/course/view.php?id=96636" class="nav-cta" target="_blank">Moodle Portal</a></li>
+            </ul>
+            <button class="mobile-menu-btn">☰</button>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <header class="page-header">
+        <div class="page-header-content">
+            <div class="breadcrumb">
+                <a href="index.html">Home</a>
+                <span>›</span>
+                <span>Bookings</span>
+                <span>›</span>
+                <span>CNC & Vacuum Former</span>
+            </div>
+            <h1>
+                <span style="font-size: 2.5rem;">⚙️</span>
+                CNC & Vacuum Former Booking
+            </h1>
+            <p>Book a 30-minute consultation slot to use the CNC machine or vacuum former. Available on Wednesdays only during Weeks 2–5.</p>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Deadline Banner -->
+        <div class="deadline-banner">
+            <div>
+                <h3>⏰ Access Deadline Approaching</h3>
+                <p>After Week 5, no new groups will be able to access these facilities. Plan ahead!</p>
+            </div>
+            <div class="countdown">
+                <div class="countdown-item">
+                    <span class="countdown-value" id="days">--</span>
+                    <span class="countdown-label">Days</span>
+                </div>
+                <div class="countdown-item">
+                    <span class="countdown-value" id="hours">--</span>
+                    <span class="countdown-label">Hours</span>
+                </div>
+                <div class="countdown-item">
+                    <span class="countdown-value" id="mins">--</span>
+                    <span class="countdown-label">Mins</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Machine Selection -->
+        <div class="content-card">
+            <h2>Select Equipment</h2>
+            <p style="margin-bottom: 24px; color: var(--text-secondary);">
+                Choose which equipment you need for your project. You can book either the CNC machine or the vacuum former in your consultation slot.
+            </p>
+            
+            <div class="machine-selector">
+                <div class="machine-card selected" onclick="selectMachine(this, 'cnc')">
+                    <div class="machine-icon">🔧</div>
+                    <h3>CNC Machine</h3>
+                    <p>Computer-controlled cutting for precise wing components and structural parts.</p>
+                </div>
+                <div class="machine-card" onclick="selectMachine(this, 'vacuum')">
+                    <div class="machine-icon">🌡️</div>
+                    <h3>Vacuum Former</h3>
+                    <p>Thermoforming plastic sheets for aerodynamic wing surfaces and covers.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="two-column">
+            <!-- Left Column - Process & Requirements -->
+            <div>
+                <!-- Process Steps -->
+                <div class="content-card">
+                    <h2>Booking Process</h2>
+                    <div class="process-timeline">
+                        <div class="process-step">
+                            <h4>1. Book a Consultation Slot</h4>
+                            <p>Reserve a 30-minute timeslot through Moodle. Only available on Wednesdays.</p>
+                        </div>
+                        <div class="process-step">
+                            <h4>2. Prepare Your Design</h4>
+                            <p>Have your project plan and CAD design ready before the consultation. The demonstrator will review your files.</p>
+                        </div>
+                        <div class="process-step">
+                            <h4>3. Consultation Meeting</h4>
+                            <p>Present your plan and CAD during the session. Discuss feasibility and any modifications needed.</p>
+                        </div>
+                        <div class="process-step">
+                            <h4>4. Get Approval</h4>
+                            <p>Gain approval from the demonstrator. They will verify your design meets safety and machine requirements.</p>
+                        </div>
+                        <div class="process-step">
+                            <h4>5. Manufacturing</h4>
+                            <p>Once approved, proceed with CNC machining or vacuum forming. Your demonstrator will handle the CAM setup based on your CAD.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Requirements -->
+                <div class="content-card">
+                    <h2>What to Bring</h2>
+                    <div class="requirements-grid">
+                        <div class="requirement-item">
+                            <span class="requirement-icon">📐</span>
+                            <p><strong>CAD Files</strong> - Your complete design files ready for review</p>
+                        </div>
+                        <div class="requirement-item">
+                            <span class="requirement-icon">📋</span>
+                            <p><strong>Project Plan</strong> - Documentation of your design intent</p>
+                        </div>
+                        <div class="requirement-item">
+                            <span class="requirement-icon">📏</span>
+                            <p><strong>Dimensions</strong> - All measurements and tolerances specified</p>
+                        </div>
+                        <div class="requirement-item">
+                            <span class="requirement-icon">🪵</span>
+                            <p><strong>Material Info</strong> - Know what material you need to use</p>
+                        </div>
+                    </div>
+
+                    <div class="alert-box alert-warning" style="margin-top: 24px; margin-bottom: 0;">
+                        <span class="alert-icon">💡</span>
+                        <div class="alert-content">
+                            <h4>Pro Tip</h4>
+                            <p>Review the machine specifications and material constraints before your consultation. This will make the approval process much smoother.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column - Booking Form -->
+            <div>
+                <div class="content-card">
+                    <h2>Book Your Consultation</h2>
+                    
+                    <div class="alert-box alert-info" style="margin-bottom: 24px;">
+                        <span class="alert-icon">ℹ️</span>
+                        <div class="alert-content">
+                            <h4>Wednesdays Only</h4>
+                            <p>CNC and Vacuum Former access is only available on Wednesdays during Weeks 2–5.</p>
+                        </div>
+                    </div>
+
+                    <!-- Success Message (hidden by default) -->
+                    <div id="bookingSuccess" style="display:none; background: #ecfdf5; border: 2px solid #10b981; border-radius: 12px; padding: 24px; text-align: center; margin-bottom: 20px;">
+                        <div style="font-size: 2rem; margin-bottom: 8px;">✅</div>
+                        <h3 style="color: #065f46; margin-bottom: 8px;">Booking Confirmed!</h3>
+                        <p id="bookingConfirmText" style="color: #047857;"></p>
+                    </div>
+
+                    <div class="booking-form" id="bookingForm">
+                        <div class="form-group">
+                            <label for="equipment">Equipment Type *</label>
+                            <select class="form-control" id="equipment" onchange="onCncSelectionChange()">
+                                <option value="cnc" selected>CNC Machine</option>
+                                <option value="vacuum">Vacuum Former</option>
+                            </select>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="week">Week *</label>
+                                <select class="form-control" id="week" onchange="onCncSelectionChange()">
+                                    <option value="">Select week...</option>
+                                    <option value="2">Week 2</option>
+                                    <option value="3">Week 3</option>
+                                    <option value="4">Week 4</option>
+                                    <option value="5">Week 5 (Final)</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Day</label>
+                                <input type="text" class="form-control" value="Wednesday" disabled style="background: #f3f4f6;">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Available Time Slots (30 min each)</label>
+                            <div class="time-slots" id="slotGrid">
+                                <p style="color: var(--text-secondary); text-align: center; padding: 20px; width: 100%;">
+                                    Select equipment and a week to see available slots.
+                                </p>
+                            </div>
+                            <p class="hint">Click to select an available slot. <span style="display:inline-block; width:10px; height:10px; background:#ef4444; border-radius:3px; margin: 0 2px;"></span> = Booked</p>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="groupName">Team/Group Name *</label>
+                                <input type="text" class="form-control" id="groupName" placeholder="e.g., 1A-A">
+                            </div>
+                            <div class="form-group">
+                                <label for="zid">Your zID *</label>
+                                <input type="text" class="form-control" id="zid" placeholder="e.g., z5123456">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="email">Contact Email *</label>
+                            <input type="email" class="form-control" id="email" placeholder="z5123456@ad.unsw.edu.au">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="notes">Additional Notes (Optional)</label>
+                            <textarea class="form-control" id="notes" rows="3" placeholder="Any specific requirements or questions for the demonstrator..."></textarea>
+                        </div>
+
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <button class="btn btn-primary" id="submitBtn" onclick="submitCncBooking()" style="width:100%; cursor:pointer;">
+                                Book This Slot →
+                            </button>
+                            <p id="formError" style="color: #ef4444; text-align: center; margin-top: 12px; display: none;"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Info Cards -->
+                <div class="three-column" style="margin-top: 30px;">
+                    <div class="info-card">
+                        <div class="info-card-icon">⏱️</div>
+                        <h3>30 Minutes</h3>
+                        <p>Consultation duration</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-card-icon">📅</div>
+                        <h3>Wed Only</h3>
+                        <p>Available day</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-card-icon">📆</div>
+                        <h3>Weeks 2–5</h3>
+                        <p>Booking window</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Equipment Details Tabs -->
+        <div class="content-card" style="margin-top: 30px;">
+            <h2>Equipment Information</h2>
+            
+            <div class="tabs">
+                <button class="tab active" onclick="showTab('cnc-info')">CNC Machine</button>
+                <button class="tab" onclick="showTab('vacuum-info')">Vacuum Former</button>
+            </div>
+
+            <div class="tab-content active" id="cnc-info">
+                <div class="two-column" style="align-items: start;">
+                    <div>
+                        <h3 style="margin-bottom: 16px; color: var(--text-primary);">CNC Machine Specifications</h3>
+                        <ul style="color: var(--text-secondary); line-height: 2;">
+                            <li><strong>Work Area:</strong> 600mm x 400mm x 100mm</li>
+                            <li><strong>Materials:</strong> Wood, MDF, Acrylic, Foam, Soft Metals</li>
+                            <li><strong>Precision:</strong> ±0.1mm accuracy</li>
+                            <li><strong>File Formats:</strong> DXF, SVG, STL (for 3D)</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3 style="margin-bottom: 16px; color: var(--text-primary);">Best For</h3>
+                        <ul style="color: var(--text-secondary); line-height: 2;">
+                            <li>Wing ribs and structural components</li>
+                            <li>Mounting brackets and fixtures</li>
+                            <li>Custom jigs and templates</li>
+                            <li>Precise geometric cuts</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-content" id="vacuum-info">
+                <div class="two-column" style="align-items: start;">
+                    <div>
+                        <h3 style="margin-bottom: 16px; color: var(--text-primary);">Vacuum Former Specifications</h3>
+                        <ul style="color: var(--text-secondary); line-height: 2;">
+                            <li><strong>Forming Area:</strong> 400mm x 300mm</li>
+                            <li><strong>Max Depth:</strong> 150mm draw depth</li>
+                            <li><strong>Materials:</strong> PETG, HIPS, ABS sheets</li>
+                            <li><strong>Sheet Thickness:</strong> 0.5mm - 3mm</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3 style="margin-bottom: 16px; color: var(--text-primary);">Best For</h3>
+                        <ul style="color: var(--text-secondary); line-height: 2;">
+                            <li>Aerodynamic wing skins</li>
+                            <li>Smooth curved surfaces</li>
+                            <li>Lightweight covers and fairings</li>
+                            <li>Repeatable plastic parts</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>DESN1000 Engineering Design • UNSW Sydney • <a href="index.html">Return to Home</a></p>
+    </footer>
+
+    <script>
+        // Machine selection
+        function selectMachine(element, type) {
+            document.querySelectorAll('.machine-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            element.classList.add('selected');
+            document.getElementById('equipment').value = type;
+        }
+
+        // Time slot selection
+        function selectSlot(element) {
+            if (element.classList.contains('unavailable')) return;
+            document.querySelectorAll('.time-slot').forEach(slot => {
+                slot.classList.remove('selected');
+            });
+            element.classList.add('selected');
+        }
+
+        // Tab switching
+        function showTab(tabId) {
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            event.target.classList.add('active');
+            document.getElementById(tabId).classList.add('active');
+        }
+
+        // Countdown timer (simulated for Week 5 deadline)
+        function updateCountdown() {
+            const now = new Date();
+            const deadline = new Date(now.getTime() + (14 * 24 * 60 * 60 * 1000));
+            
+            const diff = deadline - now;
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            
+            document.getElementById('days').textContent = days.toString().padStart(2, '0');
+            document.getElementById('hours').textContent = hours.toString().padStart(2, '0');
+            document.getElementById('mins').textContent = mins.toString().padStart(2, '0');
+        }
+
+        updateCountdown();
+        setInterval(updateCountdown, 60000);
+    </script>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="firebase-config.js"></script>
+
+    <script>
+        // ============================================
+        // CNC & VACUUM FORMER BOOKING SYSTEM
+        // ============================================
+
+        let selectedSlot = null;
+        let bookedSlots = [];
+
+        // 30 minute slots from 9:00 AM to 1:00 PM
+        const CNC_SLOTS = [
+            '9:00 AM', '9:30 AM', '10:00 AM', '10:30 AM',
+            '11:00 AM', '11:30 AM', '12:00 PM', '12:30 PM'
+        ];
+
+        // Load slots when equipment or week changes
+        async function onCncSelectionChange() {
+            const equipment = document.getElementById('equipment').value;
+            const week = document.getElementById('week').value;
+            const slotGrid = document.getElementById('slotGrid');
+
+            selectedSlot = null;
+
+            // Also update the machine card selector to match
+            document.querySelectorAll('.machine-card').forEach(card => card.classList.remove('selected'));
+            const machineCards = document.querySelectorAll('.machine-card');
+            if (equipment === 'cnc' && machineCards[0]) machineCards[0].classList.add('selected');
+            if (equipment === 'vacuum' && machineCards[1]) machineCards[1].classList.add('selected');
+
+            if (!equipment || !week) {
+                slotGrid.innerHTML = '<p style="color: var(--text-secondary); text-align: center; padding: 20px; width: 100%;">Select equipment and a week to see available slots.</p>';
+                return;
+            }
+
+            // Show loading
+            slotGrid.innerHTML = '<p style="color: var(--text-secondary); text-align: center; padding: 20px; width: 100%;">Loading available slots...</p>';
+
+            // Get booked slots from Firestore
+            try {
+                const snapshot = await db.collection('bookings')
+                    .where('facility', '==', equipment)
+                    .where('week', '==', parseInt(week))
+                    .where('day', '==', 'wednesday')
+                    .get();
+
+                bookedSlots = snapshot.docs.map(doc => doc.data().timeSlot);
+            } catch (error) {
+                console.error('Error loading bookings:', error);
+                bookedSlots = [];
+            }
+
+            // Generate slot grid
+            slotGrid.innerHTML = '';
+
+            CNC_SLOTS.forEach(time => {
+                const isBooked = bookedSlots.includes(time);
+                const div = document.createElement('div');
+                div.className = 'time-slot' + (isBooked ? ' unavailable' : '');
+                div.innerHTML = `
+                    <span class="time">${time}</span>
+                    <span class="duration">${isBooked ? 'Booked' : '30 min'}</span>
+                `;
+                if (!isBooked) {
+                    div.addEventListener('click', function() {
+                        document.querySelectorAll('.time-slot').forEach(s => {
+                            s.classList.remove('selected');
+                            if (!s.classList.contains('unavailable')) {
+                                s.querySelector('.duration').textContent = '30 min';
+                            }
+                        });
+                        this.classList.add('selected');
+                        this.querySelector('.duration').textContent = 'Selected';
+                        selectedSlot = time;
+                    });
+                }
+                slotGrid.appendChild(div);
+            });
+        }
+
+        // Override the machine card selector to sync with dropdown
+        function selectMachine(element, type) {
+            document.querySelectorAll('.machine-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            element.classList.add('selected');
+            document.getElementById('equipment').value = type;
+            onCncSelectionChange();
+        }
+
+        // Submit booking to Firestore
+        async function submitCncBooking() {
+            const equipment = document.getElementById('equipment').value;
+            const week = document.getElementById('week').value;
+            const teamName = document.getElementById('groupName').value.trim();
+            const zid = document.getElementById('zid').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const notes = document.getElementById('notes').value.trim();
+            const errorEl = document.getElementById('formError');
+            const submitBtn = document.getElementById('submitBtn');
+
+            // Validation
+            if (!equipment || !week || !selectedSlot || !teamName || !zid || !email) {
+                errorEl.textContent = 'Please fill in all fields and select a time slot.';
+                errorEl.style.display = 'block';
+                return;
+            }
+
+            if (!zid.match(/^z\d{7}$/i)) {
+                errorEl.textContent = 'Please enter a valid zID (e.g., z5123456).';
+                errorEl.style.display = 'block';
+                return;
+            }
+
+            if (!email.includes('@') || !email.includes('.')) {
+                errorEl.textContent = 'Please enter a valid email address.';
+                errorEl.style.display = 'block';
+                return;
+            }
+
+            errorEl.style.display = 'none';
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Booking...';
+
+            try {
+                // Double-check the slot is still available
+                const check = await db.collection('bookings')
+                    .where('facility', '==', equipment)
+                    .where('week', '==', parseInt(week))
+                    .where('day', '==', 'wednesday')
+                    .where('timeSlot', '==', selectedSlot)
+                    .get();
+
+                if (!check.empty) {
+                    errorEl.textContent = 'Sorry, this slot was just booked by someone else. Please select another slot.';
+                    errorEl.style.display = 'block';
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Book This Slot →';
+                    onCncSelectionChange(); // Refresh slots
+                    return;
+                }
+
+                // Submit the booking
+                const equipmentLabel = equipment === 'cnc' ? 'CNC Machine' : 'Vacuum Former';
+                await db.collection('bookings').add({
+                    facility: equipment,
+                    week: parseInt(week),
+                    day: 'wednesday',
+                    timeSlot: selectedSlot,
+                    teamName: teamName,
+                    zid: zid.toLowerCase(),
+                    email: email.toLowerCase(),
+                    notes: notes,
+                    equipmentLabel: equipmentLabel,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+
+                // Show success
+                document.getElementById('bookingForm').style.display = 'none';
+                const successEl = document.getElementById('bookingSuccess');
+                successEl.style.display = 'block';
+                document.getElementById('bookingConfirmText').textContent =
+                    `${teamName} is booked for ${equipmentLabel} — Week ${week}, Wednesday at ${selectedSlot}.`;
+
+            } catch (error) {
+                console.error('Booking error:', error);
+                errorEl.textContent = 'Something went wrong. Please try again.';
+                errorEl.style.display = 'block';
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Book This Slot →';
+            }
+        }
+    </script>
+</body>
+</html>
