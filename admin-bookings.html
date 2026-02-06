@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking Admin - DESN1000</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --unsw-blue: #3f61c4;
+            --unsw-yellow: #ffdc00;
+            --text-primary: #1a1a2e;
+            --text-secondary: #5a5a6e;
+            --bg: #f4f6f9;
+            --radius: 12px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: var(--bg);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        .top-bar {
+            background: var(--unsw-blue);
+            color: white;
+            padding: 16px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .top-bar h1 {
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+
+        .top-bar a {
+            color: var(--unsw-yellow);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 30px;
+        }
+
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: var(--radius);
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        .stat-card .stat-label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+
+        .stat-card .stat-value {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--unsw-blue);
+            margin-top: 4px;
+        }
+
+        .controls {
+            background: white;
+            border-radius: var(--radius);
+            padding: 20px 24px;
+            margin-bottom: 20px;
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            flex-wrap: wrap;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        .controls label {
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .controls select {
+            padding: 8px 14px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-family: inherit;
+            cursor: pointer;
+            background: white;
+        }
+
+        .controls select:focus {
+            outline: none;
+            border-color: var(--unsw-blue);
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: var(--unsw-blue);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2d4a9e;
+            transform: translateY(-1px);
+        }
+
+        .btn-success {
+            background: #10b981;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #059669;
+        }
+
+        .btn-danger {
+            background: #ef4444;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+
+        .spacer { flex: 1; }
+
+        .table-card {
+            background: white;
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        .table-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .table-header h2 {
+            font-size: 1.2rem;
+        }
+
+        .table-header .count {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #f9fafb;
+            padding: 12px 16px;
+            text-align: left;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-secondary);
+            border-bottom: 2px solid #e5e7eb;
+            cursor: pointer;
+            user-select: none;
+            white-space: nowrap;
+        }
+
+        th:hover {
+            color: var(--unsw-blue);
+        }
+
+        th .sort-arrow {
+            margin-left: 4px;
+            opacity: 0.3;
+        }
+
+        th.sorted .sort-arrow {
+            opacity: 1;
+        }
+
+        td {
+            padding: 12px 16px;
+            border-bottom: 1px solid #f3f4f6;
+            font-size: 0.9rem;
+        }
+
+        tr:hover td {
+            background: #f9fafb;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .badge-blue {
+            background: #eff6ff;
+            color: #1d4ed8;
+        }
+
+        .badge-orange {
+            background: #fff7ed;
+            color: #c2410c;
+        }
+
+        .badge-green {
+            background: #ecfdf5;
+            color: #047857;
+        }
+
+        .badge-purple {
+            background: #f5f3ff;
+            color: #6d28d9;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 60px;
+            color: var(--text-secondary);
+        }
+
+        .loading .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #e5e7eb;
+            border-top-color: var(--unsw-blue);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 16px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px;
+            color: var(--text-secondary);
+        }
+
+        .empty-state .icon { font-size: 3rem; margin-bottom: 12px; }
+
+        .delete-btn {
+            background: none;
+            border: none;
+            color: #ef4444;
+            cursor: pointer;
+            font-size: 1.1rem;
+            padding: 4px 8px;
+            border-radius: 6px;
+            transition: background 0.2s;
+        }
+
+        .delete-btn:hover {
+            background: #fef2f2;
+        }
+
+        @media (max-width: 768px) {
+            .stats-row { grid-template-columns: repeat(2, 1fr); }
+            .controls { flex-direction: column; align-items: stretch; }
+            .table-card { overflow-x: auto; }
+            .spacer { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Auth gate — redirect if not logged in -->
+    <script>
+        if (sessionStorage.getItem('adminAuth') !== 'true') {
+            document.body.innerHTML = '';
+            window.location.href = 'index.html';
+        }
+    </script>
+
+    <div class="top-bar">
+        <h1>DESN1000 Booking Admin</h1>
+        <div style="display:flex; gap:20px; align-items:center;">
+            <a href="index.html">← Back to Website</a>
+            <a href="#" onclick="sessionStorage.removeItem('adminAuth'); window.location.href='index.html';" style="color:#fca5a5;">Log Out</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Stats -->
+        <div class="stats-row">
+            <div class="stat-card">
+                <div class="stat-label">Total Bookings</div>
+                <div class="stat-value" id="totalCount">–</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Wind Tunnel</div>
+                <div class="stat-value" id="windCount">–</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">CNC Machine</div>
+                <div class="stat-value" id="cncCount">–</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Vacuum Former</div>
+                <div class="stat-value" id="vacuumCount">–</div>
+            </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="controls">
+            <label>Filter by:</label>
+            <select id="filterFacility" onchange="applyFilters()">
+                <option value="all">All Facilities</option>
+                <option value="wind-tunnel">Wind Tunnel</option>
+                <option value="cnc">CNC Machine</option>
+                <option value="vacuum">Vacuum Former</option>
+            </select>
+            <select id="filterWeek" onchange="applyFilters()">
+                <option value="all">All Weeks</option>
+                <option value="2">Week 2</option>
+                <option value="3">Week 3</option>
+                <option value="4">Week 4</option>
+                <option value="5">Week 5</option>
+                <option value="7">Week 7</option>
+                <option value="8">Week 8</option>
+                <option value="9">Week 9</option>
+                <option value="10">Week 10</option>
+            </select>
+            <select id="filterDay" onchange="applyFilters()">
+                <option value="all">All Days</option>
+                <option value="monday">Monday</option>
+                <option value="wednesday">Wednesday</option>
+                <option value="thursday">Thursday</option>
+                <option value="friday">Friday</option>
+            </select>
+            <div class="spacer"></div>
+            <button class="btn btn-success" onclick="downloadCSV()">📥 Download CSV</button>
+            <button class="btn btn-primary" onclick="loadBookings()">🔄 Refresh</button>
+        </div>
+
+        <!-- Table -->
+        <div class="table-card">
+            <div class="table-header">
+                <h2>All Bookings</h2>
+                <span class="count" id="filteredCount"></span>
+            </div>
+            <div id="tableContainer">
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <p>Loading bookings...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="firebase-config.js"></script>
+
+    <script>
+        let allBookings = [];
+        let filteredBookings = [];
+        let sortField = 'createdAt';
+        let sortDir = 'desc';
+
+        // Load all bookings from Firestore
+        async function loadBookings() {
+            const container = document.getElementById('tableContainer');
+            container.innerHTML = '<div class="loading"><div class="spinner"></div><p>Loading bookings...</p></div>';
+
+            try {
+                const snapshot = await db.collection('bookings').get();
+                allBookings = snapshot.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data()
+                }));
+
+                // Update stats
+                document.getElementById('totalCount').textContent = allBookings.length;
+                document.getElementById('windCount').textContent = allBookings.filter(b => b.facility === 'wind-tunnel').length;
+                document.getElementById('cncCount').textContent = allBookings.filter(b => b.facility === 'cnc').length;
+                document.getElementById('vacuumCount').textContent = allBookings.filter(b => b.facility === 'vacuum').length;
+
+                applyFilters();
+            } catch (error) {
+                console.error('Error loading bookings:', error);
+                container.innerHTML = '<div class="empty-state"><div class="icon">⚠️</div><p>Failed to load bookings: ' + error.message + '</p></div>';
+            }
+        }
+
+        function applyFilters() {
+            const facility = document.getElementById('filterFacility').value;
+            const week = document.getElementById('filterWeek').value;
+            const day = document.getElementById('filterDay').value;
+
+            filteredBookings = allBookings.filter(b => {
+                if (facility !== 'all' && b.facility !== facility) return false;
+                if (week !== 'all' && b.week !== parseInt(week)) return false;
+                if (day !== 'all' && b.day !== day) return false;
+                return true;
+            });
+
+            // Sort
+            filteredBookings.sort((a, b) => {
+                let aVal = a[sortField];
+                let bVal = b[sortField];
+                if (sortField === 'createdAt') {
+                    aVal = aVal ? aVal.toMillis() : 0;
+                    bVal = bVal ? bVal.toMillis() : 0;
+                }
+                if (typeof aVal === 'string') aVal = aVal.toLowerCase();
+                if (typeof bVal === 'string') bVal = bVal.toLowerCase();
+                if (aVal < bVal) return sortDir === 'asc' ? -1 : 1;
+                if (aVal > bVal) return sortDir === 'asc' ? 1 : -1;
+                return 0;
+            });
+
+            document.getElementById('filteredCount').textContent =
+                `Showing ${filteredBookings.length} of ${allBookings.length} bookings`;
+
+            renderTable();
+        }
+
+        function sortBy(field) {
+            if (sortField === field) {
+                sortDir = sortDir === 'asc' ? 'desc' : 'asc';
+            } else {
+                sortField = field;
+                sortDir = 'asc';
+            }
+            applyFilters();
+        }
+
+        function getFacilityBadge(facility) {
+            switch (facility) {
+                case 'wind-tunnel': return '<span class="badge badge-blue">Wind Tunnel</span>';
+                case 'cnc': return '<span class="badge badge-orange">CNC Machine</span>';
+                case 'vacuum': return '<span class="badge badge-purple">Vacuum Former</span>';
+                default: return facility;
+            }
+        }
+
+        function formatDate(timestamp) {
+            if (!timestamp) return '–';
+            const d = timestamp.toDate();
+            return d.toLocaleDateString('en-AU', { day: 'numeric', month: 'short', year: 'numeric' }) +
+                ' ' + d.toLocaleTimeString('en-AU', { hour: '2-digit', minute: '2-digit' });
+        }
+
+        function capitalize(str) {
+            return str ? str.charAt(0).toUpperCase() + str.slice(1) : '';
+        }
+
+        function renderTable() {
+            const container = document.getElementById('tableContainer');
+
+            if (filteredBookings.length === 0) {
+                container.innerHTML = '<div class="empty-state"><div class="icon">📋</div><p>No bookings found matching your filters.</p></div>';
+                return;
+            }
+
+            const arrow = (field) => {
+                const active = sortField === field;
+                const icon = active ? (sortDir === 'asc' ? '↑' : '↓') : '↕';
+                return `<span class="sort-arrow">${icon}</span>`;
+            };
+
+            let html = `<table>
+                <thead><tr>
+                    <th onclick="sortBy('facility')">Facility ${arrow('facility')}</th>
+                    <th onclick="sortBy('testingType')">Type ${arrow('testingType')}</th>
+                    <th onclick="sortBy('week')">Week ${arrow('week')}</th>
+                    <th onclick="sortBy('day')">Day ${arrow('day')}</th>
+                    <th onclick="sortBy('timeSlot')">Time Slot ${arrow('timeSlot')}</th>
+                    <th onclick="sortBy('teamName')">Team ${arrow('teamName')}</th>
+                    <th onclick="sortBy('zid')">zID ${arrow('zid')}</th>
+                    <th onclick="sortBy('email')">Email ${arrow('email')}</th>
+                    <th onclick="sortBy('createdAt')">Booked On ${arrow('createdAt')}</th>
+                    <th>Actions</th>
+                </tr></thead><tbody>`;
+
+            filteredBookings.forEach(b => {
+                html += `<tr>
+                    <td>${getFacilityBadge(b.facility)}</td>
+                    <td>${b.testingType ? '<span class="badge badge-green">' + capitalize(b.testingType) + '</span>' : '–'}</td>
+                    <td><strong>Week ${b.week || '–'}</strong></td>
+                    <td>${capitalize(b.day || '')}</td>
+                    <td><strong>${b.timeSlot || '–'}</strong></td>
+                    <td>${b.teamName || '–'}</td>
+                    <td>${b.zid || '–'}</td>
+                    <td>${b.email || '–'}</td>
+                    <td style="font-size:0.8rem; color:var(--text-secondary);">${formatDate(b.createdAt)}</td>
+                    <td><button class="delete-btn" onclick="deleteBooking('${b.id}')" title="Delete booking">🗑️</button></td>
+                </tr>`;
+            });
+
+            html += '</tbody></table>';
+            container.innerHTML = html;
+        }
+
+        // Delete a booking
+        async function deleteBooking(id) {
+            if (!confirm('Are you sure you want to delete this booking? This cannot be undone.')) return;
+
+            try {
+                await db.collection('bookings').doc(id).delete();
+                allBookings = allBookings.filter(b => b.id !== id);
+                document.getElementById('totalCount').textContent = allBookings.length;
+                document.getElementById('windCount').textContent = allBookings.filter(b => b.facility === 'wind-tunnel').length;
+                document.getElementById('cncCount').textContent = allBookings.filter(b => b.facility === 'cnc').length;
+                document.getElementById('vacuumCount').textContent = allBookings.filter(b => b.facility === 'vacuum').length;
+                applyFilters();
+            } catch (error) {
+                alert('Failed to delete: ' + error.message);
+            }
+        }
+
+        // Download as CSV
+        function downloadCSV() {
+            if (filteredBookings.length === 0) {
+                alert('No bookings to export.');
+                return;
+            }
+
+            const headers = ['Facility', 'Testing Type', 'Week', 'Day', 'Time Slot', 'Team Name', 'zID', 'Email', 'Notes', 'Booked On'];
+            const rows = filteredBookings.map(b => [
+                b.facility === 'wind-tunnel' ? 'Wind Tunnel' : b.facility === 'cnc' ? 'CNC Machine' : 'Vacuum Former',
+                b.testingType || '',
+                b.week || '',
+                capitalize(b.day || ''),
+                b.timeSlot || '',
+                b.teamName || '',
+                b.zid || '',
+                b.email || '',
+                b.notes || '',
+                b.createdAt ? b.createdAt.toDate().toISOString() : ''
+            ]);
+
+            let csv = headers.join(',') + '\n';
+            rows.forEach(row => {
+                csv += row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(',') + '\n';
+            });
+
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `DESN1000_Bookings_${new Date().toISOString().split('T')[0]}.csv`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // Load on page load
+        loadBookings();
+    </script>
+</body>
+</html>
