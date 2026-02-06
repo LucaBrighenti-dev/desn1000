@@ -1239,24 +1239,24 @@
         // CNC & VACUUM FORMER BOOKING SYSTEM
         // ============================================
 
-        let selectedSlot = null;
-        let bookedSlots = [];
+        if (typeof firebase === 'undefined' || typeof db === 'undefined') {
+            console.error('Firebase failed to load.');
+            document.getElementById('slotGrid').innerHTML = '<p style="color:#ef4444; text-align:center; padding:20px; width:100%;">⚠️ Booking system failed to connect. Please check your internet connection and refresh.</p>';
+        }
 
-        // 30 minute slots from 9:00 AM to 1:00 PM
+        let selectedSlot = null;
+
         const CNC_SLOTS = [
             '9:00 AM', '9:30 AM', '10:00 AM', '10:30 AM',
             '11:00 AM', '11:30 AM', '12:00 PM', '12:30 PM'
         ];
 
-        // Load slots when equipment or week changes
         async function onCncSelectionChange() {
             const equipment = document.getElementById('equipment').value;
             const week = document.getElementById('week').value;
             const slotGrid = document.getElementById('slotGrid');
-
             selectedSlot = null;
 
-            // Also update the machine card selector to match
             document.querySelectorAll('.machine-card').forEach(card => card.classList.remove('selected'));
             const machineCards = document.querySelectorAll('.machine-card');
             if (equipment === 'cnc' && machineCards[0]) machineCards[0].classList.add('selected');
@@ -1267,26 +1267,26 @@
                 return;
             }
 
-            // Show loading
             slotGrid.innerHTML = '<p style="color: var(--text-secondary); text-align: center; padding: 20px; width: 100%;">Loading available slots...</p>';
 
-            // Get booked slots from Firestore
+            let bookedSlots = [];
             try {
+                // Simple query: get all bookings for this facility, filter client-side
                 const snapshot = await db.collection('bookings')
                     .where('facility', '==', equipment)
-                    .where('week', '==', parseInt(week))
-                    .where('day', '==', 'wednesday')
                     .get();
 
-                bookedSlots = snapshot.docs.map(doc => doc.data().timeSlot);
+                snapshot.docs.forEach(doc => {
+                    const d = doc.data();
+                    if (d.week === parseInt(week) && d.day === 'wednesday') {
+                        bookedSlots.push(d.timeSlot);
+                    }
+                });
             } catch (error) {
                 console.error('Error loading bookings:', error);
-                bookedSlots = [];
             }
 
-            // Generate slot grid
             slotGrid.innerHTML = '';
-
             CNC_SLOTS.forEach(time => {
                 const isBooked = bookedSlots.includes(time);
                 const div = document.createElement('div');
@@ -1312,17 +1312,13 @@
             });
         }
 
-        // Override the machine card selector to sync with dropdown
         function selectMachine(element, type) {
-            document.querySelectorAll('.machine-card').forEach(card => {
-                card.classList.remove('selected');
-            });
+            document.querySelectorAll('.machine-card').forEach(card => card.classList.remove('selected'));
             element.classList.add('selected');
             document.getElementById('equipment').value = type;
             onCncSelectionChange();
         }
 
-        // Submit booking to Firestore
         async function submitCncBooking() {
             const equipment = document.getElementById('equipment').value;
             const week = document.getElementById('week').value;
@@ -1333,19 +1329,16 @@
             const errorEl = document.getElementById('formError');
             const submitBtn = document.getElementById('submitBtn');
 
-            // Validation
             if (!equipment || !week || !selectedSlot || !teamName || !zid || !email) {
                 errorEl.textContent = 'Please fill in all fields and select a time slot.';
                 errorEl.style.display = 'block';
                 return;
             }
-
             if (!zid.match(/^z\d{7}$/i)) {
                 errorEl.textContent = 'Please enter a valid zID (e.g., z5123456).';
                 errorEl.style.display = 'block';
                 return;
             }
-
             if (!email.includes('@') || !email.includes('.')) {
                 errorEl.textContent = 'Please enter a valid email address.';
                 errorEl.style.display = 'block';
@@ -1356,25 +1349,14 @@
             submitBtn.disabled = true;
             submitBtn.textContent = 'Booking...';
 
+            const timeout = setTimeout(() => {
+                errorEl.textContent = 'Booking is taking too long. Please check your internet connection and try again.';
+                errorEl.style.display = 'block';
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Book This Slot →';
+            }, 15000);
+
             try {
-                // Double-check the slot is still available
-                const check = await db.collection('bookings')
-                    .where('facility', '==', equipment)
-                    .where('week', '==', parseInt(week))
-                    .where('day', '==', 'wednesday')
-                    .where('timeSlot', '==', selectedSlot)
-                    .get();
-
-                if (!check.empty) {
-                    errorEl.textContent = 'Sorry, this slot was just booked by someone else. Please select another slot.';
-                    errorEl.style.display = 'block';
-                    submitBtn.disabled = false;
-                    submitBtn.textContent = 'Book This Slot →';
-                    onCncSelectionChange(); // Refresh slots
-                    return;
-                }
-
-                // Submit the booking
                 const equipmentLabel = equipment === 'cnc' ? 'CNC Machine' : 'Vacuum Former';
                 await db.collection('bookings').add({
                     facility: equipment,
@@ -1389,7 +1371,8 @@
                     createdAt: firebase.firestore.FieldValue.serverTimestamp()
                 });
 
-                // Show success
+                clearTimeout(timeout);
+
                 document.getElementById('bookingForm').style.display = 'none';
                 const successEl = document.getElementById('bookingSuccess');
                 successEl.style.display = 'block';
@@ -1397,8 +1380,9 @@
                     `${teamName} is booked for ${equipmentLabel} — Week ${week}, Wednesday at ${selectedSlot}.`;
 
             } catch (error) {
+                clearTimeout(timeout);
                 console.error('Booking error:', error);
-                errorEl.textContent = 'Something went wrong. Please try again.';
+                errorEl.textContent = 'Booking failed: ' + (error.message || 'Unknown error. Check your internet connection.');
                 errorEl.style.display = 'block';
                 submitBtn.disabled = false;
                 submitBtn.textContent = 'Book This Slot →';
